@@ -31,6 +31,8 @@ const fetchAndRender = (container, id, wikidata ) => {
     } );
 }
 
+const viewed = JSON.parse( localStorage.getItem( 'triaged' ) || '[]' );
+
 const renderForm = (container) => {
     const hashArgs = window.location.hash.replace( '#','' ).split( ',' );
     const wid = hashArgs[1] || '';
@@ -38,7 +40,13 @@ const renderForm = (container) => {
         fetchAndRender,
         taxon: hashArgs[0],
         wikidata: wid,
-        getSuggestions: () => wikidata.missing()
+        onClickSuggestion: ( taxon ) => {
+            viewed.push( parseInt( taxon, 10 ) );
+            localStorage.setItem( 'triaged', JSON.stringify(viewed));
+        },
+        getSuggestions: () => wikidata.missing().then((items) => {
+                return items.filter((item) => viewed.indexOf(item.taxon) === -1);
+            } )
     } ) );
 }
 

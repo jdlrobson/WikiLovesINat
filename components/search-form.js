@@ -16,7 +16,8 @@ const taxonSuggestionList = (data, onClick ) => {
     return list;
 };
 
-export default function searchForm( { fetchAndRender, getSuggestions, wikidata, taxon } ) {
+export default function searchForm( { fetchAndRender,
+    onClickSuggestion, getSuggestions, wikidata, taxon } ) {
     const submit = node('button', {}, 'search taxon');
 
     const input = node('input', {
@@ -56,6 +57,7 @@ export default function searchForm( { fetchAndRender, getSuggestions, wikidata, 
             const list = taxonSuggestionList(
                 data.sort(()=> Math.random() < 0.5 ? -1 : 1),
                 ( taxon, wikidata ) => {
+                    onClickSuggestion( taxon, wikidata );
                     input.setAttribute('value', taxon);
                     wikidataInput.setAttribute('value', wikidata);
                     submit.dispatchEvent( new Event( 'click' ) );
