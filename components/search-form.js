@@ -16,15 +16,15 @@ const taxonSuggestionList = (data, onClick ) => {
     return list;
 };
 
-export default function searchForm( { fetchAndRender, getSuggestions } ) {
+export default function searchForm( { fetchAndRender, getSuggestions, wikidata, taxon } ) {
     const submit = node('button', {}, 'search taxon');
-    const hashArgs = window.location.hash.replace('#','').split(',');
+
     const input = node('input', {
-        value: hashArgs[0],
+        value: taxon,
         type: 'text'
     });
     const wikidataInput = node('input', {
-        value: hashArgs[1] || '',
+        value: wikidata,
         type: 'text'
     });
     const dontKnow = node('button', {}, 'dont know');
@@ -45,9 +45,10 @@ export default function searchForm( { fetchAndRender, getSuggestions } ) {
     ] );
     // setup events
     submit.addEventListener('click', (ev) => {
+        const wid = wikidataInput.value;
         ev.preventDefault();
-        window.location.hash = `${input.value},${wikidataInput.value}`;
-        fetchAndRender(results, parseInt(input.value, 10));
+        window.location.hash = `${input.value},${wid}`;
+        fetchAndRender(results, parseInt(input.value, 10), wid);
     });
     dontKnow.addEventListener('click', (ev) => {
         ev.preventDefault();
