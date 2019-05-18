@@ -14,7 +14,7 @@ export default ( photos, taxon ) => {
                             src: photo.small_url
                         }),
                         node('div', {}, photo.license_code || 'all rights reserved'),
-                        node('div', {}, `${size.width}x${size.height}`),
+                        size && node('div', {}, `${size.width}x${size.height}`),
                         node('a', { href: `https://www.inaturalist.org/photos/${photo.native_photo_id}`},
                             'View on iNaturalist')
                     ]);
