@@ -11,7 +11,7 @@ const taxonSuggestionList = (data, onClick ) => {
     list.addEventListener( 'click', (ev)=> {
         const taxon = ev.target.getAttribute( 'data-taxon' );
         const wd = ev.target.getAttribute( 'data-wikidata' );
-        onClick( taxon, wd );
+        onClick( ev, taxon, wd );
     });
     return list;
 };
@@ -56,8 +56,8 @@ export default function searchForm( { fetchAndRender,
         getSuggestions().then((data) => {
             const list = taxonSuggestionList(
                 data.sort(()=> Math.random() < 0.5 ? -1 : 1),
-                ( taxon, wikidata ) => {
-                    onClickSuggestion( taxon, wikidata );
+                ( ev, taxon, wikidata ) => {
+                    onClickSuggestion( ev, taxon, wikidata );
                     input.setAttribute('value', taxon);
                     wikidataInput.setAttribute('value', wikidata);
                     submit.dispatchEvent( new Event( 'click' ) );

@@ -40,8 +40,10 @@ const renderForm = (container) => {
         fetchAndRender,
         taxon: hashArgs[0],
         wikidata: wid,
-        onClickSuggestion: ( taxon ) => {
+        onClickSuggestion: ( ev, taxon ) => {
+            const suggestion = ev.target;
             viewed.push( parseInt( taxon, 10 ) );
+            suggestion.parentNode.removeChild( suggestion );
             localStorage.setItem( 'triaged', JSON.stringify(viewed));
         },
         getSuggestions: () => wikidata.missing().then((items) => {
