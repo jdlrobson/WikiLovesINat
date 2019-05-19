@@ -58,7 +58,8 @@ const container = node( 'div' );
 render( document.body, container );
 renderForm(container);
 
-/*
-fetchAndRender(64375);
-fetchAndRender(141760);
-fetchAndRender(20978);*/
+window.onhashchange = function () {
+    const hashArgs = window.location.hash.replace( '#','' ).split( ',' );
+    const wid = hashArgs[1] || '';
+    fetchAndRender(container.querySelector('.results'), hashArgs[0], wid);
+};
