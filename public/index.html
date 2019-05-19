@@ -9,19 +9,27 @@
             display: block;
             width: 100%;
         }
+        select, input, label, button {
+            border: solid 1px #aaa;
+            padding: 8px;
+            margin: 8px 0;
+            display: block;
+        }
+        label { background: #ccc; }
         textarea.gallery__wikitext-helper__block {
             height: 200px;
         }
         .gallery__link,
         .taxon__link { margin-right: 8px;}
         .suggestions {
-            height: 40px;
+            height: 60px;
             overflow: scroll;
             display: inline-block;
             width: 100%;
             white-space: nowrap;
             overflow-y: hidden;
         }
+        .suggestions button { display: inline-block; }
         .gallery__thumbnails { display: flex;
             flex-basis: 30%;
             flex-wrap: wrap; }

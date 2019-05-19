@@ -25,6 +25,15 @@ const prettyDate = () => {
     return `${d.getDate()} ${prettyMonth(d.getMonth())} ${d.getFullYear()}`
 };
 
+const empty = ( taxon ) => {
+    return node( 'div', {}, [
+        node( 'a',
+            { href: `https://www.inaturalist.org/taxa/${taxon}` },
+            'iNaturalist has no photos of this taxon.'
+        )
+    ] )
+};
+
 export default ( photos, taxon, name ) => {
     return node( 'div', { class: 'gallery' }, [
             node('h3', {}, 'Select an image'),
@@ -78,9 +87,7 @@ export default ( photos, taxon, name ) => {
                         photo.commonsCompatLicense && uploadCommonsLink,
                         wikitextHelper
                     ]);
-                }) : node( 'a',
-                    { href: `https://www.inaturalist.org/taxa/${taxon}`
-                }, 'iNaturalist has no photos. Challenge accepted!')
+                }) : empty( taxon )
             )
         ]
     );
