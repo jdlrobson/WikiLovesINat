@@ -44,6 +44,10 @@ export default function searchForm( { fetchAndRender,
         suggestions,
         results
     ] );
+    // init if necessary
+    if ( wikidata && taxon ) {
+        fetchAndRender(results, taxon, wikidata);
+    }
     // setup events
     submit.addEventListener('click', (ev) => {
         const wid = wikidataInput.value;
