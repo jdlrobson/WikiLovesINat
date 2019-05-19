@@ -31,6 +31,7 @@ const fetchAndRender = (container, id, wikidata ) => {
     } );
 }
 
+const suggestions = wikidata.cachedSuggestions;
 const viewed = JSON.parse( localStorage.getItem( 'triaged' ) || '[]' );
 
 const renderForm = (container) => {
@@ -46,6 +47,7 @@ const renderForm = (container) => {
             suggestion.parentNode.removeChild( suggestion );
             localStorage.setItem( 'triaged', JSON.stringify(viewed));
         },
+        suggestions,
         getSuggestions: () => wikidata.missing().then((items) => {
                 return items.filter((item) => viewed.indexOf(item.taxon) === -1);
             } )

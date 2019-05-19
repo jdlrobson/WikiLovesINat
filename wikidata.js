@@ -6,6 +6,7 @@ const extractId = ( uri ) => {
     )
 }
 export default {
+    cachedSuggestions: JSON.parse( localStorage.getItem( 'suggestions' ) || '[]' ),
     missing: function () {
         if ( cache ) {
             return cache;
@@ -25,7 +26,7 @@ export default {
         ).then((r) => {
             return r.json();
         }).then((j) => {
-            return j.results.bindings.map((r) => {
+            const suggestions = j.results.bindings.map((r) => {
                 const article = r.article.value;
                 return {
                     name: extractId( article ),
@@ -34,7 +35,9 @@ export default {
                     wikidata: extractId( r.taxon.value ),
                     wikidataUri: r.taxon.value
                 }
-            })
+            });
+            localStorage.setItem( 'suggestions', JSON.stringify( suggestions ) )
+            return suggestions;
         }).catch((e) => console.log(e));
         return cache;
     }

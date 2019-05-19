@@ -16,7 +16,7 @@ const taxonSuggestionList = (data, onClick ) => {
     return list;
 };
 
-export default function searchForm( { fetchAndRender,
+export default function searchForm( { fetchAndRender, suggestions,
     onClickSuggestion, getSuggestions, wikidata, taxon } ) {
     const submit = node('button', {}, 'search taxon');
 
@@ -29,7 +29,7 @@ export default function searchForm( { fetchAndRender,
         type: 'text'
     });
     const dontKnow = node('button', {}, 'dont know');
-    const suggestions = node( 'div', { class: 'suggestions' } );
+    const suggestionsElement = node( 'div', { class: 'suggestions' } );
     const form = node('form', {}, [
         node('label', {}, 'iNat Taxon ID:' ),
         input,
@@ -41,7 +41,7 @@ export default function searchForm( { fetchAndRender,
     const results = node('div', { class: 'results' } );
     const searchForm = node( 'div', { class: 'search-form' }, [
         form,
-        suggestions,
+        suggestionsElement,
         results
     ] );
     // init if necessary
@@ -55,20 +55,27 @@ export default function searchForm( { fetchAndRender,
         window.location.hash = `${input.value},${wid}`;
         fetchAndRender(results, parseInt(input.value, 10), wid);
     });
+
+    const renderSuggestions = (data) => {
+        const list = taxonSuggestionList(
+            data.sort(()=> Math.random() < 0.5 ? -1 : 1),
+            ( ev, taxon, wikidata ) => {
+                onClickSuggestion( ev, taxon, wikidata );
+                input.setAttribute('value', taxon);
+                wikidataInput.setAttribute('value', wikidata);
+                submit.dispatchEvent( new Event( 'click' ) );
+            }
+        );
+        render(suggestionsElement, list);
+    }
+    // init suggestions
+    if ( suggestions && suggestions.length ) {
+        renderSuggestions( suggestions );
+    }
+
     dontKnow.addEventListener('click', (ev) => {
         ev.preventDefault();
-        getSuggestions().then((data) => {
-            const list = taxonSuggestionList(
-                data.sort(()=> Math.random() < 0.5 ? -1 : 1),
-                ( ev, taxon, wikidata ) => {
-                    onClickSuggestion( ev, taxon, wikidata );
-                    input.setAttribute('value', taxon);
-                    wikidataInput.setAttribute('value', wikidata);
-                    submit.dispatchEvent( new Event( 'click' ) );
-                }
-            );
-            render(suggestions, list);
-        })
+        getSuggestions().then((data) => renderSuggestions(data) );
     });
     return searchForm;
 };
