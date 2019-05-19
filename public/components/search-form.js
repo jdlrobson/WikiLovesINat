@@ -24,6 +24,7 @@ export default function searchForm( { fetchAndRender, suggestions,
     const submit = node('button', {}, 'search taxon');
 
     const input = node('input', {
+        required: true, // temporary
         value: taxon,
         type: 'text'
     });
@@ -63,9 +64,11 @@ export default function searchForm( { fetchAndRender, suggestions,
     // setup events
     submit.addEventListener('click', (ev) => {
         const wid = wikidataInput.value;
-        ev.preventDefault();
-        window.location.hash = `${input.value},${wid}`;
-        fetchAndRender(results, parseInt(input.value, 10), wid);
+        if ( document.querySelector('form').checkValidity() ) {
+            ev.preventDefault();
+            window.location.hash = `${input.value},${wid}`;
+            fetchAndRender(results, parseInt(input.value, 10), wid);
+        }
     });
 
     const renderSuggestions = (data) => {
