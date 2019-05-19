@@ -5,8 +5,6 @@ import searchForm from './components/search-form.js';
 import gallery from './components/gallery.js';
 import render from './render.js';
 
-document.body.textContent = '';
-
 const fetchAndRender = (container, id, wikidata ) => {
     render( container, node( 'div', {}, 'Performing search... please wait!' ) )
     inat.fetchTaxa(id).then((taxa) => {
@@ -55,7 +53,7 @@ const renderForm = (container) => {
 }
 
 const container = node( 'div' );
-render( document.body, container );
+render( document.getElementById('app'), container );
 renderForm(container);
 
 window.onhashchange = function () {
