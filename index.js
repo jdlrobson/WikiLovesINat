@@ -24,7 +24,7 @@ const fetchAndRender = (container, id, wikidata ) => {
                         href: `//wikidata.org/wiki/${wikidata}`
                     }, 'Wikidata' ),
                     taxa.summary && node( 'p', {}, { html: taxa.summary } ),
-                    gallery( taxa.photos, taxa.id )
+                    gallery( taxa.photos, taxa.id, taxa.name )
                 ]
             )
         );
