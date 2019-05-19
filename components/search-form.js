@@ -1,5 +1,8 @@
 import node from './node.js';
 import render from '../render.js';
+import { NOT_ENDANGERED, ENDANGERED,
+    CRITICAL_ENDANGERED, LEAST_CONCERN, VULNERABLE,
+    NEAR_TREATENED } from '../wikidata.js';
 
 const taxonSuggestionList = (data, onClick ) => {
     const list = node('div', {}, data.map((item) =>
@@ -28,7 +31,15 @@ export default function searchForm( { fetchAndRender, suggestions,
         value: wikidata,
         type: 'text'
     });
-    const dontKnow = node('button', {}, 'dont know');
+    const select = node('select', {}, [
+        node('option', { 'value': '' }, 'anything' ),
+        node('option', { 'value': LEAST_CONCERN }, 'least concern' ),
+        node('option', { 'value': CRITICAL_ENDANGERED }, 'critical endangered'),
+        node('option', { 'value': NEAR_TREATENED }, 'near threatened'),
+        node('option', { 'value': VULNERABLE }, 'vulnerable'),
+        node('option', { 'value': ENDANGERED }, 'endangered'),
+        node('option', { 'value': NOT_ENDANGERED }, '!endangered' )
+    ] );
     const suggestionsElement = node( 'div', { class: 'suggestions' } );
     const form = node('form', {}, [
         node('label', {}, 'iNat Taxon ID:' ),
@@ -36,7 +47,8 @@ export default function searchForm( { fetchAndRender, suggestions,
         node('label', {}, 'Wikidata ID:' ),
         wikidataInput,
         submit,
-        dontKnow
+        node('label', {}, 'get suggestions'),
+        select
     ] );
     const results = node('div', { class: 'results' } );
     const searchForm = node( 'div', { class: 'search-form' }, [
@@ -58,7 +70,7 @@ export default function searchForm( { fetchAndRender, suggestions,
 
     const renderSuggestions = (data) => {
         const list = taxonSuggestionList(
-            data.sort(()=> Math.random() < 0.5 ? -1 : 1),
+            data.sort((a, b)=> a.status < b.status ? 1 : -1),
             ( ev, taxon, wikidata ) => {
                 onClickSuggestion( ev, taxon, wikidata );
                 input.setAttribute('value', taxon);
@@ -73,9 +85,11 @@ export default function searchForm( { fetchAndRender, suggestions,
         renderSuggestions( suggestions );
     }
 
-    dontKnow.addEventListener('click', (ev) => {
+    select.addEventListener('change', (ev) => {
         ev.preventDefault();
-        getSuggestions().then((data) => renderSuggestions(data) );
+        const status = parseInt( ev.target.value, 10 );
+        render(suggestionsElement, node('div',{},'Finding suggestions...'));
+        getSuggestions(status).then((data) => renderSuggestions(data) );
     });
     return searchForm;
 };

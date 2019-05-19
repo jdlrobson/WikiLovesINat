@@ -48,7 +48,7 @@ const renderForm = (container) => {
             localStorage.setItem( 'triaged', JSON.stringify(viewed));
         },
         suggestions,
-        getSuggestions: () => wikidata.missing().then((items) => {
+        getSuggestions: (status) => wikidata.missing(status).then((items) => {
                 return items.filter((item) => viewed.indexOf(item.taxon) === -1);
             } )
     } ) );
