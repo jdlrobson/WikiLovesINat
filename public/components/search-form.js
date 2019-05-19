@@ -58,17 +58,15 @@ export default function searchForm( { fetchAndRender, suggestions,
         results
     ] );
     // init if necessary
-    if ( wikidata && taxon ) {
+    if ( taxon ) {
         fetchAndRender(results, taxon, wikidata);
     }
     // setup events
     submit.addEventListener('click', (ev) => {
         const wid = wikidataInput.value;
-        if ( document.querySelector('form').checkValidity() ) {
-            ev.preventDefault();
-            window.location.hash = `${input.value},${wid}`;
-            fetchAndRender(results, parseInt(input.value, 10), wid);
-        }
+        ev.preventDefault();
+        window.location.hash = `${input.value},${wid}`;
+        fetchAndRender(results, parseInt(input.value, 10), wid);
     });
 
     const renderSuggestions = (data) => {
