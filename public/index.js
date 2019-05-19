@@ -2,7 +2,7 @@ import inat from './inat.js';
 import wikidata from './wikidata.js';
 import node from './components/node.js';
 import searchForm from './components/search-form.js';
-import gallery from './components/gallery.js';
+import taxon from './components/taxon.js';
 import render from './render.js';
 
 const fetchAndRender = (container, id, wikidata ) => {
@@ -10,23 +10,7 @@ const fetchAndRender = (container, id, wikidata ) => {
     inat.fetchTaxa(id).then((taxa) => {
         render(
             container,
-            node( 'div', { class: 'taxon' },
-                [
-                    node( 'h2', {}, taxa.name ),
-                    taxa.summary && node( 'p', {}, { html: taxa.summary } ),
-                    node( 'p', {}, 'This article has the following Wikipedia URL(s):' ),
-                    node( 'a', {
-                        class: 'taxon__link',
-                        href: `${taxa.url}`
-                    }, 'Wikipedia' ),
-                    wikidata && node( 'a', {
-                        class: 'taxon__link',
-                        href: `//wikidata.org/wiki/${wikidata}`
-                    }, 'Wikidata' ),
-                    node( 'p', {}, 'This article has no image! You can help fix that!' ),
-                    gallery( taxa.photos, taxa.id, taxa.name )
-                ]
-            )
+            taxon(taxa, wikidata)
         );
     } );
 }

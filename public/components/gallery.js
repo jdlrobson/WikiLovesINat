@@ -39,16 +39,21 @@ export default ( photos, taxon, name ) => {
             node('h3', {}, 'Select an image'),
             node('div', { class: 'gallery__thumbnails'},
                 photos.length ? photos.map((photo) => {
-                    console.log(photo);
                     const size = photo.original_dimensions;
-                    const iNatUrl = `https://www.inaturalist.org/photos/${photo.native_photo_id}`;
+                    const photoId = photo.native_photo_id || photo.id;
+                    const iNatUrl = `https://www.inaturalist.org/photos/${photoId}`;
                     const dest = 'https://commons.wikimedia.org/wiki/Special:Upload';
+                    const suggestedThumbUrl = photo.small_url || photo.url;
+                    const ext = suggestedThumbUrl.split( '?' )[0].split('.').slice( -1 );
+                    const host = 'https://static.inaturalist.org/photos';
+                    const thumbnailUrl = `${host}/${photoId}/small.${ext}`;
+                    const original = `${host}/${photoId}/original.${ext}`;
                     const targetName = `${name} imported from iNaturalist ${prettyDate()}.jpg`;
                     const description = `Photo of ${name} uploaded from [${iNatUrl} iNaturalist], ${photo.attribution}`;
                     const uploadCommonsLink = node('a', {
                         class: 'gallery__link',
                         target: '_blank',
-                        href: `${dest}?wpUploadDescription=${description}&wpLicense=${licenseMap(photo.license_code)}&wpDestFile=${targetName}&wpSourceType=url&wpUploadFileURL=${photo.original_url}`
+                        href: `${dest}?wpUploadDescription=${description}&wpLicense=${licenseMap(photo.license_code)}&wpDestFile=${targetName}&wpSourceType=url&wpUploadFileURL=${original}`
                     }, 'Upload to Commons!');
                     const wikitextHelper = node('div', {
                         class: 'gallery__wikitext-helper',
@@ -68,13 +73,12 @@ export default ( photos, taxon, name ) => {
                             )
                         ]
                     );
-
                     uploadCommonsLink.addEventListener( 'click', () => wikitextHelper.removeAttribute('style'))
                     return node('div', {
                         class: !photo.commonsCompatLicense ? 'thumb thumb--sad' : 'thumb'
                     }, [
                         node('img', {
-                            src: photo.small_url
+                            src: thumbnailUrl
                         }),
                         node('div', {}, photo.license_code || 'all rights reserved'),
                         size && node('div', {}, `${size.width}x${size.height}`),
