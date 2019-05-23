@@ -12,8 +12,8 @@
         select, input, label, button {
             border: solid 1px #aaa;
             padding: 8px;
-            margin: 8px 0;
-            display: block;
+            margin: 8px 2px;
+            display: inline-block;
         }
         label { background: #ccc; }
         textarea.gallery__wikitext-helper__block {
@@ -29,6 +29,7 @@
             white-space: nowrap;
             overflow-y: hidden;
         }
+        .suggestions--loading { background: orange; }
         .suggestions button { display: inline-block; }
         .gallery__thumbnails { display: flex;
             flex-basis: 30%;
@@ -47,7 +48,8 @@
         <p>This tool helps you find articles of species on Wikipedia and Wikidata that lack images and find
             appropriately licensed images in iNaturalist to use in Wikipedia articles.
         </p>
-        <div id="app">Loading..</div>
+        <div id="app"></div>
+        <script src="preact.js"></script>
         <script type="module" src="index.js"></script>
     </body>
 </html>

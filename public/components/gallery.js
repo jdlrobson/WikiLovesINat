@@ -34,7 +34,7 @@ const empty = ( taxon ) => {
     ] )
 };
 
-export default ( photos, taxon, name ) => {
+export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) => {
     return node( 'div', { class: 'gallery' }, [
             node('h3', {}, 'Images on iNaturalist'),
             node('div', { class: 'gallery__thumbnails'},
@@ -53,11 +53,14 @@ export default ( photos, taxon, name ) => {
                     const uploadCommonsLink = node('a', {
                         class: 'gallery__link',
                         target: '_blank',
+                        onClick: () => {
+                            onClickUploadToCommons(iNatUrl);
+                        },
                         href: `${dest}?wpUploadDescription=${description}&wpLicense=${licenseMap(photo.license_code)}&wpDestFile=${targetName}&wpSourceType=url&wpUploadFileURL=${original}`
                     }, 'Upload to Commons!');
                     const wikitextHelper = node('div', {
                         class: 'gallery__wikitext-helper',
-                        style: 'display: none'
+                        style: ( uploadedFiles || [] ).indexOf(iNatUrl) > -1 ? '' : 'display: none'
                     },
                         [
                             node( 'label', {
@@ -73,7 +76,6 @@ export default ( photos, taxon, name ) => {
                             )
                         ]
                     );
-                    uploadCommonsLink.addEventListener( 'click', () => wikitextHelper.removeAttribute('style'))
                     return node('div', {
                         class: !photo.commonsCompatLicense ? 'thumb thumb--sad' : 'thumb'
                     }, [

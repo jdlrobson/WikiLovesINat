@@ -1,10 +1,4 @@
-export default function render( p, children ) {
-    p.innerHTML = '';
-    if ( children ) {
-        if ( children[0] ) {
-            children.forEach((c) => p.appendChild(c));
-        } else {
-            p.appendChild(children);
-        }
-    }
+let root;
+export default function render( node, component ) {
+    root = preact.render( component, node, root );
 }
