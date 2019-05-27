@@ -28,8 +28,9 @@ const searchSuggestions = ( { suggestions, onClickSuggestion } ) => {
     );
 };
 
-export default function ( { suggestions, onSelectConservationStatus, onClickSuggestion } ) {
+export default function ( { suggestions, defaultConservationStatus, onSelectConservationStatus, onClickSuggestion } ) {
     const select = node('select', {
+        value: defaultConservationStatus,
         onChange: onSelectConservationStatus
     }, [
         node('option', { 'value': '' }, 'anything' ),

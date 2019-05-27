@@ -40,7 +40,11 @@ const setWikidataId = (wid) => {
 
 const setTaxonData = (data) => {
     state.taxonData = data;
-}
+};
+
+const setStateValue = (name, value) => {
+    state[name] = value;
+};
 
 const app = document.getElementById('app');
 
@@ -76,10 +80,13 @@ const welcomeScreen = () => {
 
 const makeSuggestionForm = () => {
     return suggestionForm( {
+        defaultConservationStatus: state.status,
         onSelectConservationStatus: ( ev ) => {
             const status = parseInt( ev.target.value, 10 );
             setSuggestions([]);
             renderApp();
+            setStateValue('status', status);
+            localStorage.setItem('status', status);
             wikidata.missing(status).then((items) => {
                 setSuggestions(items.filter((item) =>
                     state.viewedSuggestions.indexOf(item.taxon) === -1));
@@ -120,6 +127,7 @@ const taxonResult = () => {
 const hashArgs = window.location.hash.replace( '#','' ).split( ',' );
 setINatTaxon(hashArgs[0]);
 setWikidataId(hashArgs[1] || '');
+setStateValue('status', parseInt(localStorage.getItem('status'), 10));
 setSuggestions(wikidata.cachedSuggestions);
 setViewedSuggestions(JSON.parse( localStorage.getItem( 'triaged' ) || '[]' ));
 
