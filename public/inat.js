@@ -40,7 +40,10 @@ const fetcher = {
             })),
             fetch( `https://api.inaturalist.org/v1/taxa/${id}` )
                 .then( (r) => r.json() ).then((j) => {
-                    const result = j.results[0] || {};
+                    const result = j.results[0] || false;
+                    if (!result) {
+                        throw new Error('No iNaturalist entity found.');
+                    }
                     const name = result.name;
                     const taxaInfo = {
                         url: result.wikipedia_url || `https://en.wikipedia.org/wiki/Special:Search?search=${name}`,

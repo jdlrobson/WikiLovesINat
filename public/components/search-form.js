@@ -8,13 +8,18 @@ export default function searchForm( {
     const form = node('form', { key: 'mainform' }, [
         node('label', {}, 'iNat Taxon ID:' ),
         node('input', {
-            required: true, // temporary
+            required: true,
+            name: 'inat',
+            value: taxon,
             defaultValue: taxon,
             onInput: (ev) => setINatTaxon(ev.target.value),
             type: 'text'
         }),
         node('button', {
-            onClick: onSearch
+            onClick: ( ev ) => {
+                ev.preventDefault();
+                onSearch();
+            }
         }, 'search taxon'),
     ] );
     return node( 'div', { class: 'search-form' }, [ form ] );

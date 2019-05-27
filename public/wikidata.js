@@ -88,6 +88,6 @@ export default {
             });
             localStorage.setItem( 'suggestions', JSON.stringify( suggestions ) )
             return suggestions;
-        }).catch((e) => console.log(e));
+        })
     }
 }

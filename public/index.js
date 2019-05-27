@@ -14,6 +14,7 @@ import wikidataForm from './components/wikidata-form.js';
  * @property {string} wikidata
  * @property {Object} taxonData
  * @property {Array} suggestions
+ * @property {boolean} error occurred
  * @property {Array} viewedSuggestions
  * @property {string[]} uploadedFiles (iNaturalist url)
  */
@@ -45,6 +46,10 @@ const setTaxonData = (data) => {
 
 const setStateValue = (name, value) => {
     state[name] = value;
+    // reset any errors from previous state changes
+    if ( name !== 'error' ) {
+        state.error = false;
+    }
 };
 
 const app = document.getElementById('app');
@@ -52,11 +57,17 @@ const app = document.getElementById('app');
 const doSearch = () => {
     inat.fetchTaxa(state.taxon).then((taxa) => {
         setTaxonData(taxa);
+        setStateValue('error', false);
         renderApp();
-    } );
+    }).catch((er) => {
+        setStateValue('taxon', undefined);
+        setStateValue('error', 'Unable to locate critter with that iNaturalist ID.');
+        renderApp();
+    });
 };
 
 const setScreen = (screen) => {
+    setStateValue('error', false);
     state.screen = screen;
     renderApp();
 }
@@ -120,7 +131,12 @@ const makeWikidataForm = () => {
             renderApp();
             wikidata.iNat(state.wikidata).then((iNat) => {
                 setStateValue('taxon', iNat);
+                setStateValue('error', false);
                 doSearch();
+                renderApp();
+            }).catch((err) => {
+                setStateValue('wikidata', undefined);
+                setStateValue('error', 'I was unable to locate creature with that Wikidata ID.');
                 renderApp();
             })
         }
@@ -131,11 +147,15 @@ const makeSearchForm = () => {
     return searchForm( {
         onSearch: doSearch,
         taxon: state.taxon,
-        setINatTaxon, setWikidataId
+        setINatTaxon,
     } );
 };
 
 const taxonResult = () => {
+    if ( state.error ) {
+        return node('div', { class: 'error' },
+            [ state.error ] );
+    }
     return state.taxonData && node('div', { class: 'search-form__results' },
         taxonView(state.taxonData, ( filename ) => {
             state.uploadedFiles.push(filename);
@@ -164,9 +184,10 @@ const getScreen = () => {
         case 2:
             return makeScreen([searchTypeButtons(), makeSearchForm(), taxonResult()]);
         case 3:
-        return makeScreen([searchTypeButtons(), makeWikidataForm(), taxonResult()]);
+            return makeScreen([searchTypeButtons(), makeWikidataForm(), taxonResult()]);
         default:
-            return makeScreen(['uhoh']);
+            setStateValue('error', 'I broke something. This one is my fault...');
+            return makeScreen([taxonResult()]);
     }
 }
 const renderApp = () => {
