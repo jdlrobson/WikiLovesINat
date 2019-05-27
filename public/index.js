@@ -55,6 +55,7 @@ const setStateValue = (name, value) => {
 const app = document.getElementById('app');
 
 const doSearch = () => {
+    window.location.hash = `#${state.taxon}`;
     inat.fetchTaxa(state.taxon).then((taxa) => {
         setTaxonData(taxa);
         setStateValue('error', false);
@@ -69,7 +70,6 @@ const doSearch = () => {
 const setScreen = (screen) => {
     setStateValue('error', false);
     state.screen = screen;
-    renderApp();
 }
 
 const searchTypeButtons = () => {
@@ -77,6 +77,7 @@ const searchTypeButtons = () => {
         return (ev) => {
             ev.preventDefault();
             setScreen(screen);
+            renderApp();
         };
     };
 
@@ -196,6 +197,9 @@ const renderApp = () => {
     render(app, getScreen())
 };
 
+if (hashArgs[0]) {
+    setScreen(2);
+}
 renderApp();
 if(state.taxon) {
     doSearch();
