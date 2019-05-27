@@ -36,7 +36,7 @@ const empty = ( taxon ) => {
 
 export default ( photos, taxon, name ) => {
     return node( 'div', { class: 'gallery' }, [
-            node('h3', {}, 'Select an image'),
+            node('h3', {}, 'Images on iNaturalist'),
             node('div', { class: 'gallery__thumbnails'},
                 photos.length ? photos.map((photo) => {
                     const size = photo.original_dimensions;
