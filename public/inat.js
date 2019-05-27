@@ -1,8 +1,21 @@
+const THUMB_SIZE = 300;
+
 function flatten(arr) {
     return arr.reduce(function (flat, toFlatten) {
       return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
     }, []);
 }
+
+const lookupWikidataId = (title, taxaInfo) => {
+    return fetch(`https://en.wikipedia.org/w/api.php?origin=*&pithumbsize=${THUMB_SIZE}&format=json&formatversion=2&action=query&prop=pageprops|pageimages&ppprop=wikibase_item&redirects=1&titles=${title}`)
+        .then((r) => r.json()).then((r) => {
+            const page = r.query.pages[0];
+            return page ? Object.assign( {
+                thumbnail: page.thumbnail && page.thumbnail.source,
+                wid: page.pageprops.wikibase_item
+            }, taxaInfo) : taxaInfo;
+        });
+};
 
 const fetcher = {
     fetchPhotos: ( id ) => {
@@ -21,20 +34,26 @@ const fetcher = {
         } );
     },
     fetchTaxa: function ( id ) {
-        return this.fetchPhotos( id ).then( ( photos ) => {
-            return fetch( `https://api.inaturalist.org/v1/taxa/${id}` )
-            .then( (r) => r.json() )
-            .then((j) => {
-                const result = j.results[0] || {};
-                const name = result.name;
-                return {
-                    url: result.wikipedia_url || `https://en.wikipedia.org/wiki/Special:Search?search=${name}`,
-                    id,
-                    summary: result.wikipedia_summary,
-                    name,
-                    photos
-                };
-            } );
+        return Promise.all( [
+            this.fetchPhotos(id).then((photos)=>({
+                photos
+            })),
+            fetch( `https://api.inaturalist.org/v1/taxa/${id}` )
+                .then( (r) => r.json() ).then((j) => {
+                    const result = j.results[0] || {};
+                    const name = result.name;
+                    const taxaInfo = {
+                        url: result.wikipedia_url || `https://en.wikipedia.org/wiki/Special:Search?search=${name}`,
+                        id,
+                        summary: result.wikipedia_summary,
+                        name,
+                    };
+                    return result.wikipedia_url ?
+                        lookupWikidataId(result.wikipedia_url.split('/').slice(-1), taxaInfo) : taxaInfo
+                })
+        ]).then((responses) => {
+            const x = Object.assign.apply({}, responses);
+            return x;
         });
     }
 }
