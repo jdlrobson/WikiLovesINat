@@ -19,7 +19,7 @@ import wikidataForm from './components/wikidata-form.js';
  * @property {string[]} uploadedFiles (iNaturalist url)
  */
 const state = {
-    screen: 0,
+    screen: 1,
     uploadedFiles: []
 };
 
@@ -73,25 +73,28 @@ const setScreen = (screen) => {
 }
 
 const searchTypeButtons = () => {
+    const prevDefaultAndSetScreen = (screen) => {
+        return (ev) => {
+            ev.preventDefault();
+            setScreen(screen);
+        };
+    };
+
     return node('div', {class:'search-type-buttons'}, [
         node( 'button', {
-            onClick: () => setScreen(1)
+            class: state.screen === 1 ? 'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen(1)
         }, ['Find articles without images']),
         node( 'button', {
-            onClick: () => setScreen(2)
+            class: state.screen === 2 ? 'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen(2)
         }, [ 'Find an article using iNaturalist ID']),
         node( 'button', {
-            onClick: () => setScreen(3)
+            class: state.screen === 3 ? 'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen(3)
         }, [ 'Find an article using Wikidata ID'])
     ]);
 }
-const welcomeScreen = () => {
-    return node( 'div', {}, [
-        node( 'p', {}, [ 'Welcome to the Wiki loves iNaturalist tool. It will help you match articles in Wikipedia to images on iNaturalist.org.' ]),
-        node( 'p', {}, [ 'We can make suggestions of articles that need images or you might have one in mind?' ]),
-        searchTypeButtons()
-    ])
-};
 
 const makeSuggestionForm = () => {
     return suggestionForm( {
@@ -156,8 +159,8 @@ const taxonResult = () => {
         return node('div', { class: 'error' },
             [ state.error ] );
     }
-    return state.taxonData && node('div', { class: 'search-form__results' },
-        taxonView(state.taxonData, ( filename ) => {
+    return node('div', { class: 'search-form__results' },
+        state.taxonData && taxonView(state.taxonData, ( filename ) => {
             state.uploadedFiles.push(filename);
             renderApp();
         }, state.uploadedFiles)
@@ -178,7 +181,6 @@ const makeScreen = (children) => {
 const getScreen = () => {
     switch ( state.screen ) {
         case 0:
-            return makeScreen([welcomeScreen(), taxonResult()])
         case 1:
             return makeScreen([searchTypeButtons(), makeSuggestionForm(), taxonResult()]);
         case 2:

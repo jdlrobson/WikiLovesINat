@@ -8,7 +8,8 @@ const taxonSuggestionList = (data, onClick ) => {
         const wd = item.wikidata;
         const taxon = item.taxon;
         return node('button', {
-            onClick: () => {
+            onClick: (ev) => {
+                ev.preventDefault();
                 onClick(taxon, wd);
             },
         }, `${item.name} (${item.taxon}, ${item.wikidata})` )
@@ -42,8 +43,11 @@ export default function ( { suggestions, defaultConservationStatus, onSelectCons
         node('option', { 'value': NOT_ENDANGERED }, '!endangered' )
     ] );
     
-    return node('div', { class: 'suggestion-form' }, [
-        node('label', {}, 'Conservation status'),
+    return node('form', { class: 'suggestion-form' }, [
+        node('p', {}, [
+            'This form will locate biodiversity which does not have a Wikidata image associated. Matches are also unlikely to have an image on the corresponding Wikipedia article. Select a conservation status to begin and suggestions will appear below.'
+        ]),
+        node('label', {}, 'Conservation status:'),
         select,
         searchSuggestions( { suggestions, onClickSuggestion } )
     ] );

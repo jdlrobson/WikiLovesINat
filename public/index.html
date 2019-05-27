@@ -4,18 +4,21 @@
         <title>Wiki loves iNaturalist</title>
         <meta name="viewport" content="width=device-width,minimum-scale=0.5,maximum-scale=1,user-scalable=0,initial-scale=1.0"/>
         <style type="text/css">
+        body { color: #333; }
+        footer { padding-top: 20px; text-align: right; font-size: 0.9em; border-top: solid 1px #aaa;}
+        h1 { text-transform: uppercase; border-bottom: solid 4px #888;}
         gallery__wikitext-helper { text-align: center; }
         .gallery__wikitext-helper__block {
             display: block;
             width: 100%;
         }
-        select, input, label, button {
+        select, input, button {
             border: solid 1px #aaa;
             padding: 8px;
             margin: 8px 2px;
             display: inline-block;
         }
-        label { background: #ccc; }
+        label { font-weight: bold; }
         textarea.gallery__wikitext-helper__block {
             height: 200px;
         }
@@ -41,14 +44,19 @@
             text-align: center;
         }
         .thumb--sad { border: solid 1px red; opacity: 0.4; }
+        form { background: #e0e0fa; padding: 8px;}
+        .search-form__results { background: #daf6b9; padding: 8px; min-height: 400px; }
+        .tab { border: none; border-bottom: solid 3px #ccc; margin: 0 4px 0 0; }
+        .tab--selected { border-bottom: solid 3px #5aac00; }
         </style>
     </head>
     <body>
         <h1>Wiki loves iNaturalist!</h1>
-        <p>This tool helps you find articles of species on Wikipedia and Wikidata that lack images and find
-            appropriately licensed images in iNaturalist to use in Wikipedia articles.
+        <p>
+            Welcome to the Wiki loves iNaturalist tool. This tool helps you find articles of species on Wikipedia and Wikidata that lack images and find appropriately licensed images in iNaturalist to use in Wikipedia articles. We can make suggestions of articles that need images or you might have one in mind?
         </p>
         <div id="app"></div>
+        <footer>Note this app will only work on modern browsers and is a prototype. I will make it look much more beautiful as soon as I find some time with my favorite designer!</footer>
         <script src="preact.js"></script>
         <script type="module" src="index.js"></script>
     </body>
