@@ -128,7 +128,7 @@ const hashArgs = window.location.hash.replace( '#','' ).split( ',' );
 setINatTaxon(hashArgs[0]);
 setWikidataId(hashArgs[1] || '');
 setStateValue('status', parseInt(localStorage.getItem('status'), 10));
-setSuggestions(wikidata.cachedSuggestions);
+setSuggestions(wikidata.cachedSuggestions.sort(()=>Math.random() < 0.5 ? -1 : 1));
 setViewedSuggestions(JSON.parse( localStorage.getItem( 'triaged' ) || '[]' ));
 
 const makeScreen = (children) => {
