@@ -5,6 +5,7 @@ import taxonView from './components/taxon.js';
 import searchForm from './components/search-form.js';
 import render from './render.js';
 import suggestionForm from './components/suggestion-form.js';
+import wikidataForm from './components/wikidata-form.js';
 
 /**
  * @type {Object} State
@@ -67,7 +68,10 @@ const searchTypeButtons = () => {
         }, ['Find articles without images']),
         node( 'button', {
             onClick: () => setScreen(2)
-        }, [ 'Find an article using iNaturalist ID'])
+        }, [ 'Find an article using iNaturalist ID']),
+        node( 'button', {
+            onClick: () => setScreen(3)
+        }, [ 'Find an article using Wikidata ID'])
     ]);
 }
 const welcomeScreen = () => {
@@ -107,6 +111,22 @@ const makeSuggestionForm = () => {
     } );
 };
 
+const makeWikidataForm = () => {
+    return wikidataForm( {
+        setStateValue,
+        wid: state.wikidata,
+        onSearch: () => {
+            setStateValue('taxonData', undefined);
+            renderApp();
+            wikidata.iNat(state.wikidata).then((iNat) => {
+                setStateValue('taxon', iNat);
+                doSearch();
+                renderApp();
+            })
+        }
+    } );
+};
+
 const makeSearchForm = () => {
     return searchForm( {
         onSearch: doSearch,
@@ -143,6 +163,8 @@ const getScreen = () => {
             return makeScreen([searchTypeButtons(), makeSuggestionForm(), taxonResult()]);
         case 2:
             return makeScreen([searchTypeButtons(), makeSearchForm(), taxonResult()]);
+        case 3:
+        return makeScreen([searchTypeButtons(), makeWikidataForm(), taxonResult()]);
         default:
             return makeScreen(['uhoh']);
     }
