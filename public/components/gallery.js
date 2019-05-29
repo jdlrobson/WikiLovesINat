@@ -51,8 +51,7 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) =>
                     const original = `${host}/${photoId}/original.${ext}`;
                     const d = new Date();
                     const targetName = `${name} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
-                    const description = `=={{int:filedesc}}==
-{{Information
+                    const description = `{{Information
   |description={{en|1=Photo of ${name} uploaded from [${iNatHomeUrl} iNaturalist].}}
   |date=${d.getFullYear()}-${d.getMonth()}-${d.getDate()}
   |source=${iNatUrl}
