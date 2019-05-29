@@ -2,23 +2,23 @@ import node from './node.js';
 import gallery from './gallery.js';
 
 export default function (taxa, onClickUploadToCommons, uploadedFiles) {
-    const { wid, url, thumbnail, name, summary, id, photos } = taxa;
+    const { wid, url, thumbnail, name, summary, id, photos, searchUrl } = taxa;
     return node( 'div', { class: 'taxon' },
         [
             node( 'h2', {}, name ),
             summary && node( 'p', {dangerouslySetInnerHTML: { __html: summary }}, [] ),
             thumbnail && node( 'div', {}, [
                 node( 'img', { src: thumbnail })
-            ]) || node( 'p', {}, 'This article has no image! You can help fix that!' ),
-            node( 'p', {}, 'Wikipedia URL(s):' ),
+            ]) || ( url && node( 'p', {}, 'This article has no image! You can help fix that!' ) ),
+            url && node( 'p', {}, url ? 'Wikipedia URL(s):' : 'iNaturalist entity is not linked to a Wikipedia article.' ),
                 node( 'a', {
                     class: 'taxon__link',
-                    href: url
-                }, url ? 'Wikipedia' : 'Wikipedia (unavailable)' ),
+                    href: url ? url : `https://en.wikipedia.org/${searchUrl}`
+                }, url ? 'Wikipedia' : 'Search Wikipedia' ),
                 node( 'a', {
                     class: 'taxon__link',
-                    href: wid && `//wikidata.org/wiki/${wid}`
-                }, wid ? 'Wikidata' : 'Wikidata (unavailable)' ),
+                    href: wid ? wid : `https://en.wikidata.org/${searchUrl}`
+                }, wid ? 'Wikidata' : 'Search Wikidata' ),
             gallery(photos || [], id, name, onClickUploadToCommons, uploadedFiles)
         ]
     );

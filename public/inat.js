@@ -46,7 +46,8 @@ const fetcher = {
                     }
                     const name = result.name;
                     const taxaInfo = {
-                        url: result.wikipedia_url || `https://en.wikipedia.org/wiki/Special:Search?search=${name}`,
+                        searchUrl: `/wiki/Special:Search?search=${name}`,
+                        url: result.wikipedia_url,
                         id,
                         summary: result.wikipedia_summary,
                         name,
