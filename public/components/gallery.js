@@ -49,7 +49,9 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) =>
                     const thumbnailUrl = `${host}/${photoId}/small.${ext}`;
                     const original = `${host}/${photoId}/original.${ext}`;
                     const targetName = `${name} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
-                    const description = `Photo of ${name} uploaded from [${iNatUrl} iNaturalist], ${photo.attribution}`;
+                    const description = `Photo of ${name} uploaded from [${iNatUrl} iNaturalist], ${photo.attribution}
+
+[[Category:Images imported from iNaturalist.org]]`;
                     const uploadCommonsLink = node('a', {
                         class: 'gallery__link',
                         target: '_blank',
