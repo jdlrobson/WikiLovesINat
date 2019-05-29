@@ -10,7 +10,7 @@ export default function (taxa, onClickUploadToCommons, uploadedFiles) {
             thumbnail && node( 'div', {}, [
                 node( 'img', { src: thumbnail })
             ]) || ( url && node( 'p', {}, 'This article has no image! You can help fix that!' ) ),
-            url && node( 'p', {}, url ? 'Wikipedia URL(s):' : 'iNaturalist entity is not linked to a Wikipedia article.' ),
+            node( 'p', {}, url ? 'Wikipedia URL(s):' : 'iNaturalist entity is not linked to a Wikipedia article.' ),
                 node( 'a', {
                     class: 'taxon__link',
                     href: url ? url : `https://en.wikipedia.org/${searchUrl}`
