@@ -42,14 +42,22 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) =>
                     const size = photo.original_dimensions;
                     const photoId = photo.native_photo_id || photo.id;
                     const iNatUrl = `https://www.inaturalist.org/photos/${photoId}`;
+                    const iNatHomeUrl = `https://inaturalist.org`;
                     const dest = 'https://commons.wikimedia.org/wiki/Special:Upload';
                     const suggestedThumbUrl = photo.small_url || photo.url;
                     const ext = suggestedThumbUrl.split( '?' )[0].split('.').slice( -1 );
                     const host = 'https://static.inaturalist.org/photos';
                     const thumbnailUrl = `${host}/${photoId}/small.${ext}`;
                     const original = `${host}/${photoId}/original.${ext}`;
+                    const d = new Date();
                     const targetName = `${name} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
-                    const description = `Photo of ${name} uploaded from [${iNatUrl} iNaturalist], ${photo.attribution}
+                    const description = `=={{int:filedesc}}==
+{{Information
+  |description={{en|1=Photo of ${name} uploaded from [${iNatHomeUrl} iNaturalist].}}
+  |date=${d.getDate()} ${prettyMonth(d.getMonth())} ${d.getFullYear()}
+  |source=${iNatUrl}
+  |author=${photo.attribution}
+}}
 
 [[Category:Images imported from iNaturalist.org]]`;
                     const uploadCommonsLink = node('a', {
@@ -58,7 +66,7 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) =>
                         onClick: () => {
                             onClickUploadToCommons(iNatUrl);
                         },
-                        href: `${dest}?wpUploadDescription=${description}&wpLicense=${licenseMap(photo.license_code)}&wpDestFile=${targetName}&wpSourceType=url&wpUploadFileURL=${original}`
+                        href: `${dest}?wpUploadDescription=${encodeURIComponent(description)}&wpLicense=${licenseMap(photo.license_code)}&wpDestFile=${targetName}&wpSourceType=url&wpUploadFileURL=${original}`
                     }, 'Upload to Commons!');
                     const wikitextHelper = node('div', {
                         class: 'gallery__wikitext-helper',
