@@ -54,7 +54,7 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) =>
                     const description = `=={{int:filedesc}}==
 {{Information
   |description={{en|1=Photo of ${name} uploaded from [${iNatHomeUrl} iNaturalist].}}
-  |date=${d.getDate()} ${prettyMonth(d.getMonth())} ${d.getFullYear()}
+  |date=${d.getFullYear()}-${d.getMonth()}-${d.getDate()}
   |source=${iNatUrl}
   |author=${photo.attribution}
 }}
