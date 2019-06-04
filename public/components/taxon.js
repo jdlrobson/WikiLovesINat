@@ -17,7 +17,7 @@ export default function (taxa, onClickUploadToCommons, uploadedFiles) {
                 }, url ? 'Wikipedia' : 'Search Wikipedia' ),
                 node( 'a', {
                     class: 'taxon__link',
-                    href: wid ? wid : `https://en.wikidata.org/${searchUrl}`
+                    href: wid ? `https://www.wikidata.org/wiki/${wid}` : `https://www.wikidata.org/${searchUrl}`
                 }, wid ? 'Wikidata' : 'Search Wikidata' ),
             gallery(photos || [], id, name, onClickUploadToCommons, uploadedFiles)
         ]
