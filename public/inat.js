@@ -18,20 +18,31 @@ const lookupWikidataId = (title, taxaInfo) => {
 };
 
 const fetcher = {
-    fetchPhotos: ( id ) => {
-        return fetch( `https://api.inaturalist.org/v1/observations?verifiable=true&taxon_id=${id}&order_by=votes` ).then((r) => {
+    fetchAllPhotos: ( id, page, allResults = [] ) => {
+        return fetch( `https://api.inaturalist.org/v1/observations?verifiable=true&taxon_id=${id}&order_by=votes&page=${page}` ).then((r) => {
             return r.json();
         }).then((j) => {
             const results = j.results || [];
-            return flatten( results.map((r) => {
+            allResults = allResults.concat( flatten( results.map((r) => {
                 return r.photos.map((photo) => {
                     return Object.assign( photo, {
                         commonsCompatLicense:
                             ['cc-by-sa', 'cc0', 'cc-by'].indexOf(photo.license_code) > -1
                     } );
                 });
-            } ) ).sort((p) => p.commonsCompatLicense ? -1 : 1);
-        } );
+            } ) ) );
+            // workaround for #6
+            // fetch first 10 pages (TODO: Make it possible to scroll through all results)
+            if ( j.total_results > j.page * j.per_page && page < 10 ) {
+                return fetcher.fetchAllPhotos( id, page + 1, allResults );
+            } else {
+                return allResults;
+            }
+        });
+    },
+    fetchPhotos: ( id, page = 1 ) => {
+        console.log( 1 );
+        return fetcher.fetchAllPhotos( id, page );
     },
     fetchTaxa: function ( id ) {
         return Promise.all( [
