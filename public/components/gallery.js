@@ -57,6 +57,7 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) =>
   |source=${iNatUrl}
   |author=${photo.attribution}
 }}
+{{iNaturalistreview}}
 
 [[Category:Media from iNaturalist]]`;
                     const uploadCommonsLink = node('a', {
