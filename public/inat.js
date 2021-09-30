@@ -19,7 +19,7 @@ const lookupWikidataId = (title, taxaInfo) => {
 
 const fetcher = {
     fetchAllPhotos: ( id, page, allResults = [] ) => {
-        return fetch( `https://api.inaturalist.org/v1/observations?verifiable=true&taxon_id=${id}&order_by=votes&page=${page}` ).then((r) => {
+        return fetch( `https://api.inaturalist.org/v1/observations?quality_grade=research&taxon_id=${id}&order_by=votes&page=${page}` ).then((r) => {
             return r.json();
         }).then((j) => {
             const results = j.results || [];
