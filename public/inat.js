@@ -31,18 +31,23 @@ const mapObservation = (r) => {
     });
 };
 
+const fetchObservationToJson = ( r ) => {
+    return r.json().then((j) => {
+        return {
+            photos: flatten(
+                j.results.map(mapObservation)
+            ),
+            page: j.page + 1
+        };
+    });
+}
+
 const fetcher = {
+    fetchByObservationId: ( id ) => {
+        return fetch(`https://api.inaturalist.org/v1/observations/${id}`).then(fetchObservationToJson);
+    },
     fetchForUser: (username, page = 1) => {
-        return fetch( `https://api.inaturalist.org/v1/observations?user_id=${username}&quality_grade=research&page=${page}` ).then((r) => {
-            return r.json();
-        }).then((j) => {
-            return {
-                photos: flatten(
-                    j.results.map(mapObservation)
-                ),
-                page: j.page + 1
-            };
-        });
+        return fetch( `https://api.inaturalist.org/v1/observations?user_id=${username}&quality_grade=research&page=${page}` ).then(fetchObservationToJson);
     },
     fetchAllPhotos: ( id, page, allResults = [] ) => {
         return fetcher.fetchAllPhotosWithMetadata( id, page, allResults, page + 10 ).then((results) => {

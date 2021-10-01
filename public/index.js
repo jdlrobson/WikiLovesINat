@@ -12,6 +12,7 @@ const SCREEN_FIND_WIKIPEDIA_ARTICLES = 1;
 const SCREEN_FIND_BY_INAT = 2;
 const SCREEN_FIND_BY_WIKIDATA = 3;
 const SCREEN_FIND_BY_INAT_USERNAME = 4;
+const SCREEN_FIND_BY_INAT_OBSERVATION_ID = 5;
 
 /**
  * @type {Object} State
@@ -68,6 +69,13 @@ const setStateValue = (name, value) => {
 };
 
 const app = document.getElementById('app');
+
+const doSearchObservationID = ( id ) => {
+    inat.fetchByObservationId(id).then((taxa) => {
+        setTaxonData(taxa);
+        renderApp();
+    })
+};
 
 const doSearchUsername = ( username ) => {
     inat.fetchForUser(username, state.page).then((taxa) => {
@@ -129,7 +137,12 @@ const searchTypeButtons = () => {
             class: state.screen === SCREEN_FIND_BY_INAT_USERNAME ?
                 'tab--selected tab' : 'tab',
             onClick: prevDefaultAndSetScreen(SCREEN_FIND_BY_INAT_USERNAME)
-        }, [ 'Find an article using iNaturalist username'])
+        }, [ 'Find an article using iNaturalist username']),
+        node( 'button', {
+            class: state.screen === SCREEN_FIND_BY_INAT_OBSERVATION_ID ?
+                'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen( SCREEN_FIND_BY_INAT_OBSERVATION_ID)
+        }, [ 'Find an article using iNaturalist observation id'])
     ]);
 }
 
@@ -184,17 +197,28 @@ const makeWikidataForm = () => {
 };
 
 const makeSearchForm = () => {
-    let username;
+    let searchValue;
+    let label;
+    let onSearch;
     switch ( state.screen ) {
         case SCREEN_FIND_BY_INAT_USERNAME:
+            label = 'iNat username:';
+            onSearch = () => {
+                doSearchUsername( searchValue );
+            };
+        case SCREEN_FIND_BY_INAT_OBSERVATION_ID:
+            label = 'iNat observation ID:';
+            onSearch = () => {
+                doSearchObservationID( searchValue );
+            };
+        case SCREEN_FIND_BY_INAT_OBSERVATION_ID:
+        case SCREEN_FIND_BY_INAT_USERNAME:
             return searchForm( {
-                label: 'iNat username:',
-                onSearch: () => {
-                    doSearchUsername( username );
-                },
+                label,
+                onSearch,
                 searchTerm: '',
                 onInput: ( value ) => {
-                    username = value
+                    searchValue = value;
                 }
             } );
         default:
@@ -248,6 +272,7 @@ const getScreen = () => {
         case SCREEN_DEFAULT:
         case SCREEN_FIND_WIKIPEDIA_ARTICLES:
             return makeScreen([searchTypeButtons(), makeSuggestionForm(), taxonResult()]);
+        case SCREEN_FIND_BY_INAT_OBSERVATION_ID:
         case SCREEN_FIND_BY_INAT_USERNAME:
         case SCREEN_FIND_BY_INAT:
             return makeScreen([searchTypeButtons(), makeSearchForm(), taxonResult()]);
