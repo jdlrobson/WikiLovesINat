@@ -68,7 +68,7 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onC
   |author=${photo.attribution}
 }}
 {{iNaturalistreview}}
-
+[[Category:Media uploaded with WikiLovesINat]]
 [[Category:Media from iNaturalist]]`;
                     const uploadCommonsLink = node('a', {
                         class: 'gallery__link',
