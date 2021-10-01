@@ -29,8 +29,10 @@ const fetcher = {
         }).then((j) => {
             const results = j.results || [];
             allResults = allResults.concat( flatten( results.map((r) => {
+                const observedDate = r.observed_on_string;
                 return r.photos.map((photo) => {
                     return Object.assign( photo, {
+                        observedDate,
                         commonsCompatLicense:
                             ['cc-by-sa', 'cc0', 'cc-by'].indexOf(photo.license_code) > -1
                     } );

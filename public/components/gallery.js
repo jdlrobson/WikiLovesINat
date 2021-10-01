@@ -34,11 +34,20 @@ const empty = ( taxon ) => {
     ] )
 };
 
+const padDateComponent = (d) => {
+    if ( d < 10 ) {
+        return '0' + d;
+    } else {
+        return d;
+    }
+};
+
 export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onClickMore ) => {
     return node( 'div', { class: 'gallery' }, [
             node('h3', {}, 'Images on iNaturalist'),
             node('div', { class: 'gallery__thumbnails'},
                 photos.length ? photos.map((photo) => {
+                    const observed = photo.observedDate;
                     const size = photo.original_dimensions;
                     const photoId = photo.native_photo_id || photo.id;
                     const iNatUrl = `https://www.inaturalist.org/photos/${photoId}`;
@@ -49,11 +58,11 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onC
                     const host = 'https://static.inaturalist.org/photos';
                     const thumbnailUrl = `${host}/${photoId}/small.${ext}`;
                     const original = `${host}/${photoId}/original.${ext}`;
-                    const d = new Date();
+                    const d = new Date(observed);
                     const targetName = `${name} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
                     const description = `{{Information
   |description={{en|1=Photo of ${name} uploaded from [${iNatHomeUrl} iNaturalist].}}
-  |date=${d.getFullYear()}-${d.getMonth()}-${d.getDate()}
+  |date=${d.getFullYear()}-${padDateComponent(d.getMonth())}-${padDateComponent(d.getDate())}
   |source=${iNatUrl}
   |author=${photo.attribution}
 }}
