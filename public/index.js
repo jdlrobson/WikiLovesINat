@@ -11,6 +11,7 @@ const SCREEN_DEFAULT = 1;
 const SCREEN_FIND_WIKIPEDIA_ARTICLES = 1;
 const SCREEN_FIND_BY_INAT = 2;
 const SCREEN_FIND_BY_WIKIDATA = 3;
+const SCREEN_FIND_BY_INAT_USERNAME = 4;
 
 /**
  * @type {Object} State
@@ -68,14 +69,26 @@ const setStateValue = (name, value) => {
 
 const app = document.getElementById('app');
 
+const doSearchUsername = ( username ) => {
+    inat.fetchForUser(username, state.page).then((taxa) => {
+        setTaxonData(taxa);
+        setStateValue('nextPage', taxa.page);
+        renderApp();
+    })
+};
+
 const doSearch = ( preserveResults = false ) => {
+    doSearchTaxon( preserveResults );
+};
+
+function doSearchTaxon( preserveResults ) {
     window.location.hash = `#${state.taxon}`;
     inat.fetchTaxa(state.taxon, state.page).then((taxa) => {
         setTaxonData(taxa, preserveResults);
         setStateValue('error', false);
         setStateValue('nextPage', taxa.page);
         renderApp();
-    }).catch((er) => {
+    }).catch(() => {
         setStateValue('taxon', undefined);
         setStateValue('error', 'Unable to locate critter with that iNaturalist ID.');
         renderApp();
@@ -111,7 +124,12 @@ const searchTypeButtons = () => {
             class: state.screen === SCREEN_FIND_BY_WIKIDATA ?
                 'tab--selected tab' : 'tab',
             onClick: prevDefaultAndSetScreen(SCREEN_FIND_BY_WIKIDATA)
-        }, [ 'Find an article using Wikidata ID'])
+        }, [ 'Find an article using Wikidata ID']),
+        node( 'button', {
+            class: state.screen === SCREEN_FIND_BY_INAT_USERNAME ?
+                'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen(SCREEN_FIND_BY_INAT_USERNAME)
+        }, [ 'Find an article using iNaturalist username'])
     ]);
 }
 
@@ -138,7 +156,6 @@ const makeSuggestionForm = () => {
             setWikidataId(wid);
             renderApp();
             doSearch();
-
         },
         suggestions: state.suggestions
     } );
@@ -167,11 +184,27 @@ const makeWikidataForm = () => {
 };
 
 const makeSearchForm = () => {
-    return searchForm( {
-        onSearch: doSearch,
-        taxon: state.taxon,
-        setINatTaxon,
-    } );
+    let username;
+    switch ( state.screen ) {
+        case SCREEN_FIND_BY_INAT_USERNAME:
+            return searchForm( {
+                label: 'iNat username:',
+                onSearch: () => {
+                    doSearchUsername( username );
+                },
+                searchTerm: '',
+                onInput: ( value ) => {
+                    username = value
+                }
+            } );
+        default:
+            return searchForm( {
+                label: 'iNat Taxon ID:',
+                onSearch: doSearch,
+                searchTerm: state.taxon,
+                onInput: setINatTaxon,
+            } );
+    }
 };
 
 const taxonResult = () => {
@@ -215,6 +248,7 @@ const getScreen = () => {
         case SCREEN_DEFAULT:
         case SCREEN_FIND_WIKIPEDIA_ARTICLES:
             return makeScreen([searchTypeButtons(), makeSuggestionForm(), taxonResult()]);
+        case SCREEN_FIND_BY_INAT_USERNAME:
         case SCREEN_FIND_BY_INAT:
             return makeScreen([searchTypeButtons(), makeSearchForm(), taxonResult()]);
         case SCREEN_FIND_BY_WIKIDATA:

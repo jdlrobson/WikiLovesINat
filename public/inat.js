@@ -17,7 +17,33 @@ const lookupWikidataId = (title, taxaInfo) => {
         });
 };
 
+const mapObservation = (r) => {
+    const observedDate = r.observed_on_string;
+    const taxon = r.taxon || {};
+    const taxonName = taxon.preferred_common_name || taxon.name;
+    return r.photos.map((photo) => {
+        return Object.assign( photo, {
+            taxonName,
+            observedDate,
+            commonsCompatLicense:
+                ['cc-by-sa', 'cc0', 'cc-by'].indexOf(photo.license_code) > -1
+        } );
+    });
+};
+
 const fetcher = {
+    fetchForUser: (username, page = 1) => {
+        return fetch( `https://api.inaturalist.org/v1/observations?user_id=${username}&quality_grade=research&page=${page}` ).then((r) => {
+            return r.json();
+        }).then((j) => {
+            return {
+                photos: flatten(
+                    j.results.map(mapObservation)
+                ),
+                page: j.page + 1
+            };
+        });
+    },
     fetchAllPhotos: ( id, page, allResults = [] ) => {
         return fetcher.fetchAllPhotosWithMetadata( id, page, allResults, page + 10 ).then((results) => {
             return results.photos;
@@ -28,16 +54,7 @@ const fetcher = {
             return r.json();
         }).then((j) => {
             const results = j.results || [];
-            allResults = allResults.concat( flatten( results.map((r) => {
-                const observedDate = r.observed_on_string;
-                return r.photos.map((photo) => {
-                    return Object.assign( photo, {
-                        observedDate,
-                        commonsCompatLicense:
-                            ['cc-by-sa', 'cc0', 'cc-by'].indexOf(photo.license_code) > -1
-                    } );
-                });
-            } ) ) );
+            allResults = allResults.concat( flatten( results.map(mapObservation) ) );
             if ( j.total_results > j.page * j.per_page && page < maxPage ) {
                 return fetcher.fetchAllPhotosWithMetadata( id, page + 1, allResults, maxPage );
             } else {

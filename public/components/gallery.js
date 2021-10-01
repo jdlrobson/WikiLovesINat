@@ -52,6 +52,7 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onC
                     const photoId = photo.native_photo_id || photo.id;
                     const iNatUrl = `https://www.inaturalist.org/photos/${photoId}`;
                     const iNatHomeUrl = `https://inaturalist.org`;
+                    const taxonName = photo.taxonName || name;
                     const dest = 'https://commons.wikimedia.org/wiki/Special:Upload';
                     const suggestedThumbUrl = photo.small_url || photo.url;
                     const ext = suggestedThumbUrl.split( '?' )[0].split('.').slice( -1 );
@@ -59,9 +60,9 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onC
                     const thumbnailUrl = `${host}/${photoId}/small.${ext}`;
                     const original = `${host}/${photoId}/original.${ext}`;
                     const d = new Date(observed);
-                    const targetName = `${name} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
+                    const targetName = `${taxonName} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
                     const description = `{{Information
-  |description={{en|1=Photo of ${name} uploaded from [${iNatHomeUrl} iNaturalist].}}
+  |description={{en|1=Photo of ${taxonName} uploaded from [${iNatHomeUrl} iNaturalist].}}
   |date=${d.getFullYear()}-${padDateComponent(d.getMonth())}-${padDateComponent(d.getDate())}
   |source=${iNatUrl}
   |author=${photo.attribution}

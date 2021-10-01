@@ -1,18 +1,19 @@
 import node from './node.js';
 
 export default function searchForm( {
-    setINatTaxon,
+    onInput,
+    label,
     onSearch,
-    taxon } ) {
+    searchTerm } ) {
 
     const form = node('form', { key: 'mainform' }, [
-        node('label', {}, 'iNat Taxon ID:' ),
+        node('label', {}, label ),
         node('input', {
             required: true,
             name: 'inat',
-            value: taxon,
-            defaultValue: taxon,
-            onInput: (ev) => setINatTaxon(ev.target.value),
+            value: searchTerm,
+            defaultValue: searchTerm,
+            onInput: (ev) => onInput(ev.target.value),
             type: 'text'
         }),
         node('button', {
@@ -20,7 +21,7 @@ export default function searchForm( {
                 ev.preventDefault();
                 onSearch();
             }
-        }, 'search taxon'),
+        }, 'load images'),
     ] );
     return node( 'div', { class: 'search-form' }, [ form ] );
 };
