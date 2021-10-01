@@ -25,7 +25,10 @@ const SCREEN_FIND_BY_WIKIDATA = 3;
  */
 const state = {
     screen: SCREEN_DEFAULT,
-    uploadedFiles: []
+    uploadedFiles: [],
+    page: 1,
+    nextPage: 1,
+    taxa: undefined
 };
 
 const setSuggestions = (suggestions) => {
@@ -45,8 +48,14 @@ const setWikidataId = (wid) => {
     state.wikidata = wid;
 };
 
-const setTaxonData = (data) => {
-    state.taxonData = data;
+const setTaxonData = (data, preserveResults) => {
+    if ( preserveResults ) {
+        state.taxonData.photos = state.taxonData.photos.concat(
+            data.photos
+        );
+    } else {
+        state.taxonData = data;
+    }
 };
 
 const setStateValue = (name, value) => {
@@ -59,11 +68,12 @@ const setStateValue = (name, value) => {
 
 const app = document.getElementById('app');
 
-const doSearch = () => {
+const doSearch = ( preserveResults = false ) => {
     window.location.hash = `#${state.taxon}`;
-    inat.fetchTaxa(state.taxon).then((taxa) => {
-        setTaxonData(taxa);
+    inat.fetchTaxa(state.taxon, state.page).then((taxa) => {
+        setTaxonData(taxa, preserveResults);
         setStateValue('error', false);
+        setStateValue('nextPage', taxa.page);
         renderApp();
     }).catch((er) => {
         setStateValue('taxon', undefined);
@@ -165,6 +175,13 @@ const makeSearchForm = () => {
 };
 
 const taxonResult = () => {
+    const loadMore = function () {
+        if ( state.page !== state.nextPage ) {
+            setStateValue('page', state.nextPage );
+        }
+        doSearch( true );
+    };
+
     if ( state.error ) {
         return node('div', {
             dangerouslySetInnerHTML: {
@@ -177,7 +194,8 @@ const taxonResult = () => {
         state.taxonData && taxonView(state.taxonData, ( filename ) => {
             state.uploadedFiles.push(filename);
             renderApp();
-        }, state.uploadedFiles)
+        }, state.uploadedFiles,
+        state.page !== state.nextPage && loadMore )
     );
 };
 

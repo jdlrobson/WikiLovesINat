@@ -1,7 +1,7 @@
 import node from './node.js';
 import gallery from './gallery.js';
 
-export default function (taxa, onClickUploadToCommons, uploadedFiles) {
+export default function (taxa, onClickUploadToCommons, uploadedFiles, onClickMore) {
     const { wid, url, thumbnail, name, summary, id, photos, searchUrl } = taxa;
     return node( 'div', { class: 'taxon' },
         [
@@ -19,7 +19,7 @@ export default function (taxa, onClickUploadToCommons, uploadedFiles) {
                     class: 'taxon__link',
                     href: wid ? `https://www.wikidata.org/wiki/${wid}` : `https://www.wikidata.org/${searchUrl}`
                 }, wid ? 'Wikidata' : 'Search Wikidata' ),
-            gallery(photos || [], id, name, onClickUploadToCommons, uploadedFiles)
+            gallery(photos || [], id, name, onClickUploadToCommons, uploadedFiles, onClickMore)
         ]
     );
 }

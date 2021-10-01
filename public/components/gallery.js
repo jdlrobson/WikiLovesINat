@@ -34,7 +34,7 @@ const empty = ( taxon ) => {
     ] )
 };
 
-export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) => {
+export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onClickMore ) => {
     return node( 'div', { class: 'gallery' }, [
             node('h3', {}, 'Images on iNaturalist'),
             node('div', { class: 'gallery__thumbnails'},
@@ -104,7 +104,10 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles ) =>
                         wikitextHelper
                     ]);
                 }) : empty( taxon )
-            )
+            ),
+            onClickMore ? node('button', {
+                onClick: onClickMore
+            }, 'Load more photos') : null
         ]
     );
 };

@@ -19,6 +19,11 @@ const lookupWikidataId = (title, taxaInfo) => {
 
 const fetcher = {
     fetchAllPhotos: ( id, page, allResults = [] ) => {
+        return fetcher.fetchAllPhotosWithMetadata( id, page, allResults, page + 10 ).then((results) => {
+            return results.photos;
+        });
+    },
+    fetchAllPhotosWithMetadata: ( id, page, allResults = [], maxPage = 2 ) => {
         return fetch( `https://api.inaturalist.org/v1/observations?quality_grade=research&taxon_id=${id}&order_by=votes&page=${page}` ).then((r) => {
             return r.json();
         }).then((j) => {
@@ -31,23 +36,23 @@ const fetcher = {
                     } );
                 });
             } ) ) );
-            // workaround for #6
-            // fetch first 10 pages (TODO: Make it possible to scroll through all results)
-            if ( j.total_results > j.page * j.per_page && page < 10 ) {
-                return fetcher.fetchAllPhotos( id, page + 1, allResults );
+            if ( j.total_results > j.page * j.per_page && page < maxPage ) {
+                return fetcher.fetchAllPhotosWithMetadata( id, page + 1, allResults, maxPage );
             } else {
-                return allResults;
+                return {
+                    photos: allResults,
+                    page: page
+                };
             }
         });
     },
     fetchPhotos: ( id, page = 1 ) => {
-        console.log( 1 );
-        return fetcher.fetchAllPhotos( id, page );
+        return fetcher.fetchAllPhotosWithMetadata( id, page, [], page + 1 );
     },
-    fetchTaxa: function ( id ) {
+    fetchTaxa: function ( id, page ) {
         return Promise.all( [
-            this.fetchPhotos(id).then((photos)=>({
-                photos
+            this.fetchPhotos(id, page).then(({ photos, page })=>({
+                photos, page
             })),
             fetch( `https://api.inaturalist.org/v1/taxa/${id}` )
                 .then( (r) => r.json() ).then((j) => {
