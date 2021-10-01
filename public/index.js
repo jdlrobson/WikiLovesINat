@@ -139,8 +139,9 @@ const makeWikidataForm = () => {
                 doSearch();
                 renderApp();
             }).catch((err) => {
+                const url = `https://www.wikidata.org/wiki/${state.wikidata}`;
                 setStateValue('wikidata', undefined);
-                setStateValue('error', 'I was unable to locate creature with that Wikidata ID.');
+                setStateValue('error', `The Wikidata page has no property P3151 (iNaturalist taxon ID). Please add this to <a href="${url}" target="_blank">the wikidata page</a>.`);
                 renderApp();
             })
         }
@@ -157,8 +158,12 @@ const makeSearchForm = () => {
 
 const taxonResult = () => {
     if ( state.error ) {
-        return node('div', { class: 'error' },
-            [ state.error ] );
+        return node('div', {
+            dangerouslySetInnerHTML: {
+                __html: state.error
+            },
+            class: 'error'
+        }, '' );
     }
     return node('div', { class: 'search-form__results' },
         state.taxonData && taxonView(state.taxonData, ( filename ) => {
