@@ -7,6 +7,11 @@ import render from './render.js';
 import suggestionForm from './components/suggestion-form.js';
 import wikidataForm from './components/wikidata-form.js';
 
+const SCREEN_DEFAULT = 1;
+const SCREEN_FIND_WIKIPEDIA_ARTICLES = 1;
+const SCREEN_FIND_BY_INAT = 2;
+const SCREEN_FIND_BY_WIKIDATA = 3;
+
 /**
  * @type {Object} State
  * @property {number} screen that is currently active
@@ -19,7 +24,7 @@ import wikidataForm from './components/wikidata-form.js';
  * @property {string[]} uploadedFiles (iNaturalist url)
  */
 const state = {
-    screen: 1,
+    screen: SCREEN_DEFAULT,
     uploadedFiles: []
 };
 
@@ -83,16 +88,19 @@ const searchTypeButtons = () => {
 
     return node('div', {class:'search-type-buttons'}, [
         node( 'button', {
-            class: state.screen === 1 ? 'tab--selected tab' : 'tab',
-            onClick: prevDefaultAndSetScreen(1)
+            class: state.screen === SCREEN_FIND_WIKIPEDIA_ARTICLES ?
+                'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen(SCREEN_FIND_WIKIPEDIA_ARTICLES)
         }, ['Find articles without images']),
         node( 'button', {
-            class: state.screen === 2 ? 'tab--selected tab' : 'tab',
-            onClick: prevDefaultAndSetScreen(2)
+            class: state.screen === SCREEN_FIND_BY_INAT ?
+                'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen(SCREEN_FIND_BY_INAT)
         }, [ 'Find an article using iNaturalist ID']),
         node( 'button', {
-            class: state.screen === 3 ? 'tab--selected tab' : 'tab',
-            onClick: prevDefaultAndSetScreen(3)
+            class: state.screen === SCREEN_FIND_BY_WIKIDATA ?
+                'tab--selected tab' : 'tab',
+            onClick: prevDefaultAndSetScreen(SCREEN_FIND_BY_WIKIDATA)
         }, [ 'Find an article using Wikidata ID'])
     ]);
 }
@@ -186,12 +194,12 @@ const makeScreen = (children) => {
 
 const getScreen = () => {
     switch ( state.screen ) {
-        case 0:
-        case 1:
+        case SCREEN_DEFAULT:
+        case SCREEN_FIND_WIKIPEDIA_ARTICLES:
             return makeScreen([searchTypeButtons(), makeSuggestionForm(), taxonResult()]);
-        case 2:
+        case SCREEN_FIND_BY_INAT:
             return makeScreen([searchTypeButtons(), makeSearchForm(), taxonResult()]);
-        case 3:
+        case SCREEN_FIND_BY_WIKIDATA:
             return makeScreen([searchTypeButtons(), makeWikidataForm(), taxonResult()]);
         default:
             setStateValue('error', 'I broke something. This one is my fault...');
@@ -203,7 +211,7 @@ const renderApp = () => {
 };
 
 if (hashArgs[0]) {
-    setScreen(2);
+    setScreen(SCREEN_FIND_BY_INAT);
 }
 renderApp();
 if(state.taxon) {
