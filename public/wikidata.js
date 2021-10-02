@@ -1,6 +1,7 @@
 let cache;
 const INATPROP = 'P3151';
 const WIKIDATA = 'https://www.wikidata.org';
+import { LOCAL_STORAGE_SUGGESTION_KEY } from './constants.js';
 
 export const ENDANGERED = 0;
 export const CRITICAL_ENDANGERED = 1;
@@ -59,7 +60,7 @@ const getUrl = ( status ) => {
 }
 export default {
     iNat: lookupINatId,
-    cachedSuggestions: JSON.parse( localStorage.getItem( 'suggestions' ) || '[]' ),
+    cachedSuggestions: JSON.parse( localStorage.getItem( LOCAL_STORAGE_SUGGESTION_KEY ) || '[]' ),
     missing: function ( status ) {
         // find all wikidata entries without collage and image
         return fetch(
@@ -86,7 +87,7 @@ export default {
                     wikidataUri: r.taxon.value
                 }
             }).sort( (a, b) => a.name < b.name ? -1 : 1);
-            localStorage.setItem( 'suggestions', JSON.stringify( suggestions ) )
+            localStorage.setItem( LOCAL_STORAGE_SUGGESTION_KEY, JSON.stringify( suggestions ) )
             return suggestions;
         })
     }
