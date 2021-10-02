@@ -85,7 +85,7 @@ export default {
                     wikidata: extractId( r.taxon.value ),
                     wikidataUri: r.taxon.value
                 }
-            });
+            }).sort( (a, b) => a.name < b.name ? -1 : 1);
             localStorage.setItem( 'suggestions', JSON.stringify( suggestions ) )
             return suggestions;
         })
