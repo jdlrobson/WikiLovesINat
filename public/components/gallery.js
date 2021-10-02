@@ -1,5 +1,5 @@
 import node from './node.js';
-import { INAT_STATIC_HOST } from '../constants.js';
+import { INAT_STATIC_HOST, INAT_STATIC_HOST_BACKUP } from '../constants.js';
 
 const licenseMap = ( iNatlicense ) => {
     switch ( iNatlicense ) {
@@ -111,7 +111,24 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
                         class: !photo.commonsCompatLicense ? 'thumb thumb--sad' : 'thumb'
                     }, [
                         node('img', {
-                            src: thumbnailUrl
+                            src: thumbnailUrl,
+                            onError: (ev) => {
+                                const node = ev.target;
+                                const src = node.getAttribute('src');
+                                const link = node && node.parentNode.querySelector('.gallery__link--commons-upload');
+                                if ( link ) {
+                                    link.setAttribute(
+                                        'href',
+                                        link.getAttribute('href').replace(
+                                            INAT_STATIC_HOST, INAT_STATIC_HOST_BACKUP
+                                        )
+                                    )
+                                }
+                                node.setAttribute(
+                                    'src',
+                                    src.replace( INAT_STATIC_HOST, INAT_STATIC_HOST_BACKUP )
+                                );
+                            }
                         }),
                         node('div', {}, photo.license_code || 'all rights reserved'),
                         size && node('div', {}, `${size.width}x${size.height}`),
