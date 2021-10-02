@@ -9,7 +9,9 @@ export default function (taxa, onClickUploadToCommons, uploadedFiles, onClickMor
             summary && node( 'p', {dangerouslySetInnerHTML: { __html: summary }}, [] ),
             thumbnail && node( 'div', {}, [
                 node( 'img', { src: thumbnail })
-            ]) || ( url && node( 'p', {}, 'This article has no image! You can help fix that!' ) ),
+            ]) || (
+                url && node( 'p', {}, 'This article has no image! You can help fix that!' )
+            ),
             node( 'p', {}, url ? 'Wikipedia URL(s):' : 'iNaturalist entity is not linked to a Wikipedia article.' ),
                 node( 'a', {
                     class: 'taxon__link',
@@ -19,7 +21,7 @@ export default function (taxa, onClickUploadToCommons, uploadedFiles, onClickMor
                     class: 'taxon__link',
                     href: wid ? `https://www.wikidata.org/wiki/${wid}` : `https://www.wikidata.org/${searchUrl}`
                 }, wid ? 'Wikidata' : 'Search Wikidata' ),
-            gallery(photos || [], id, name, onClickUploadToCommons, uploadedFiles, onClickMore)
+            gallery(photos || [], id, name, wid, onClickUploadToCommons, uploadedFiles, onClickMore)
         ]
     );
 }

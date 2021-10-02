@@ -34,6 +34,10 @@ const empty = ( taxon ) => {
     ] )
 };
 
+const wikidataPostToUrl = ( filename, qid ) => {
+    return `https://www.wikidata.org/wiki/${qid}`;
+}
+
 const padDateComponent = (d) => {
     if ( d < 10 ) {
         return '0' + d;
@@ -42,7 +46,7 @@ const padDateComponent = (d) => {
     }
 };
 
-export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onClickMore ) => {
+export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles, onClickMore ) => {
     return node( 'div', { class: 'gallery' }, [
             node('h3', {}, 'Images on iNaturalist'),
             node('div', { class: 'gallery__thumbnails'},
@@ -71,7 +75,7 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onC
 [[Category:Media uploaded with WikiLovesINat]]
 [[Category:Media from iNaturalist]]`;
                     const uploadCommonsLink = node('a', {
-                        class: 'gallery__link',
+                        class: 'gallery__link gallery__link--commons-upload',
                         target: '_blank',
                         onClick: () => {
                             onClickUploadToCommons(iNatUrl);
@@ -93,7 +97,13 @@ export default ( photos, taxon, name, onClickUploadToCommons, uploadedFiles, onC
                                 `{{Speciesbox
                                     | image = ${targetName}
                                 }}`
-                            )
+                            ),
+                            node('a', {
+                                href: wikidataPostToUrl(
+                                    targetName,
+                                    qid
+                                )
+                            }, 'Post to Wikidata.org')
                         ]
                     );
                     return node('div', {
