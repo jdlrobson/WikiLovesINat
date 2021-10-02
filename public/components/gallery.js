@@ -1,4 +1,5 @@
 import node from './node.js';
+import { INAT_STATIC_HOST } from '../constants.js';
 
 const licenseMap = ( iNatlicense ) => {
     switch ( iNatlicense ) {
@@ -60,7 +61,7 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
                     const dest = 'https://commons.wikimedia.org/wiki/Special:Upload';
                     const suggestedThumbUrl = photo.small_url || photo.url;
                     const ext = suggestedThumbUrl.split( '?' )[0].split('.').slice( -1 );
-                    const host = 'https://static.inaturalist.org/photos';
+                    const host = `${INAT_STATIC_HOST}photos`;
                     const thumbnailUrl = `${host}/${photoId}/small.${ext}`;
                     const original = `${host}/${photoId}/original.${ext}`;
                     const d = new Date(observed);
