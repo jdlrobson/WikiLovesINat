@@ -98,7 +98,7 @@ function doSearchTaxon( preserveResults ) {
         renderApp();
     }).catch(() => {
         setStateValue('taxon', undefined);
-        setStateValue('error', 'Unable to locate critter with that iNaturalist ID.');
+        setStateValue('error', 'No iNaturalist observations.');
         renderApp();
     });
 };
