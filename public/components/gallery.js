@@ -64,11 +64,22 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
                     const host = `${INAT_STATIC_HOST}photos`;
                     const thumbnailUrl = `${host}/${photoId}/small.${ext}`;
                     const original = `${host}/${photoId}/original.${ext}`;
-                    const d = new Date(observed);
+                    let d = new Date(observed);
+                    let timestamp = '';
+                    if (isNaN(d.getTime())) {
+                        const m= observed.match(/([0-9]+)[-/]([0-9]+)[-/]([0-9]+)/);
+                        if (m && m.length === 4) {
+                            timestamp = `{{date|${m[1]}|${m[2]}|${m[3]}}}`;
+                        } else {
+                            timestamp = '';
+                        }
+                    } else {
+                        timestamp = `{{date|${d.getFullYear()}|${padDateComponent(d.getMonth())}|${padDateComponent(d.getDate())}}}`;
+                    }
                     const targetName = `${taxonName} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
                     const description = `{{Information
   |description={{en|1=Photo of ${taxonName} uploaded from [${iNatHomeUrl} iNaturalist].}}
-  |date=${d.getFullYear()}-${padDateComponent(d.getMonth())}-${padDateComponent(d.getDate())}
+  |date=${timestamp}
   |source=${iNatUrl}
   |author=${photo.attribution}
 }}
