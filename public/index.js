@@ -157,6 +157,7 @@ const makeSuggestionForm = () => {
             localStorage.setItem('status', status);
             wikidata.missing(status).then((items) => {
                 setSuggestions(items.filter((item) =>
+                    item.photo !== null &&
                     state.viewedSuggestions.indexOf(item.taxon) === -1));
                 renderApp();
             } )
@@ -169,6 +170,21 @@ const makeSuggestionForm = () => {
             setWikidataId(wid);
             renderApp();
             doSearch();
+        },
+        onClickClear: (ev) => {
+            ev.preventDefault();
+            alert('Pruning...');
+            wikidata.prune().then((suggestions) => {
+                if ( state.suggestions.length === suggestions.length ) {
+                    alert('Pruning not possible');
+                    return;
+                }
+                setSuggestions(
+                    suggestions
+                );
+                renderApp();
+                alert('Pruning complete.');
+            })
         },
         suggestions: state.suggestions
     } );
@@ -260,7 +276,7 @@ const hashArgs = window.location.hash.replace( '#','' ).split( ',' );
 setINatTaxon(hashArgs[0]);
 setWikidataId(hashArgs[1] || '');
 setStateValue('status', parseInt(localStorage.getItem('status'), 10));
-setSuggestions(wikidata.cachedSuggestions.sort(()=>Math.random() < 0.5 ? -1 : 1));
+setSuggestions(wikidata.cachedSuggestions);
 setViewedSuggestions(JSON.parse( localStorage.getItem( 'triaged' ) || '[]' ));
 
 const makeScreen = (children) => {

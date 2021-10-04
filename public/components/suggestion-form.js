@@ -7,12 +7,19 @@ const taxonSuggestionList = (data, onClick ) => {
     const list = node('div', {}, data.map((item) => {
         const wd = item.wikidata;
         const taxon = item.taxon;
-        return node('button', {
+        const photo = item.photo || {
+            src: 'noinatq.png'
+        };
+        return node('img', {
+            width: 50,
+            height: 50,
+            src: photo.square_url || 'noinat.png',
             onClick: (ev) => {
                 ev.preventDefault();
                 onClick(taxon, wd);
             },
-        }, `${item.name} (${item.taxon}, ${item.wikidata})` )
+            title: `${item.name} (${item.taxon}, ${item.wikidata})`
+        } );
     } ) );
     return list;
 };
@@ -29,7 +36,7 @@ const searchSuggestions = ( { suggestions, onClickSuggestion } ) => {
     );
 };
 
-export default function ( { suggestions, defaultConservationStatus, onSelectConservationStatus, onClickSuggestion } ) {
+export default function ( { suggestions, defaultConservationStatus, onSelectConservationStatus, onClickSuggestion, onClickClear } ) {
     const select = node('select', {
         value: defaultConservationStatus,
         onChange: onSelectConservationStatus
@@ -49,6 +56,13 @@ export default function ( { suggestions, defaultConservationStatus, onSelectCons
         ]),
         node('label', {}, 'Conservation status:'),
         select,
-        searchSuggestions( { suggestions, onClickSuggestion } )
+        searchSuggestions( { suggestions, onClickSuggestion } ),
+        suggestions && node(
+            'button',
+            {
+                onClick: onClickClear
+            },
+            'clear suggestions with no iNat default photo'
+        )
     ] );
 };
