@@ -115,7 +115,7 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
                             onError: (ev) => {
                                 const node = ev.target;
                                 const src = node.getAttribute('src');
-                                const link = node && node.parentNode.querySelector('.gallery__link--commons-upload');
+                                const link = node && node.parentNode && node.parentNode.querySelector('.gallery__link--commons-upload');
                                 if ( link ) {
                                     link.setAttribute(
                                         'href',
