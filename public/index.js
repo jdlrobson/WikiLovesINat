@@ -215,23 +215,25 @@ const makeWikidataForm = () => {
 const makeSearchForm = () => {
     let searchValue;
     let label;
-    let onSearch;
     switch ( state.screen ) {
         case SCREEN_FIND_BY_INAT_USERNAME:
             label = 'iNat username:';
-            onSearch = () => {
-                doSearchUsername( searchValue );
-            };
-        case SCREEN_FIND_BY_INAT_OBSERVATION_ID:
-            label = 'iNat observation ID:';
-            onSearch = () => {
-                doSearchObservationID( searchValue );
-            };
-        case SCREEN_FIND_BY_INAT_OBSERVATION_ID:
-        case SCREEN_FIND_BY_INAT_USERNAME:
             return searchForm( {
-                label,
-                onSearch,
+                label: 'iNat username:',
+                onSearch: () => {
+                    doSearchUsername( searchValue );
+                },
+                searchTerm: '',
+                onInput: ( value ) => {
+                    searchValue = value;
+                }
+            } );
+        case SCREEN_FIND_BY_INAT_OBSERVATION_ID:
+            return searchForm( {
+                label: 'iNat observation ID:',
+                onSearch: () => {
+                    doSearchObservationID( searchValue );
+                },
                 searchTerm: '',
                 onInput: ( value ) => {
                     searchValue = value;
