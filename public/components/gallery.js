@@ -52,6 +52,8 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
             node('h3', {}, 'Images on iNaturalist'),
             node('div', { class: 'gallery__thumbnails'},
                 photos.length ? photos.map((photo) => {
+                    const location = photo.coords ?
+                        `{{Object location dec|${photo.coords.split(',').join('|')}}}` : '';
                     const observed = photo.observedDate;
                     const size = photo.original_dimensions;
                     const photoId = photo.native_photo_id || photo.id;
@@ -84,6 +86,7 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
   |author=${photo.attribution}
 }}
 {{iNaturalistreview}}
+${location}
 [[Category:Media uploaded with WikiLovesINat]]
 [[Category:Media from iNaturalist]]`;
                     const uploadCommonsLink = node('a', {
