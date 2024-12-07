@@ -78,7 +78,9 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
                     } else {
                         timestamp = `{{date|${d.getFullYear()}|${padDateComponent(d.getMonth())}|${padDateComponent(d.getDate())}}}`;
                     }
-                    const targetName = `${taxonName} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
+                    const targetName = photo.place ?
+                        `${taxonName}, ${photo.place} imported from iNaturalist photo ${photoId}.jpg`:
+                        `${taxonName} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
                     const description = `{{Information
   |description={{en|1=Photo of ${taxonName} uploaded from [${iNatHomeUrl} iNaturalist].}}
   |date=${timestamp}
