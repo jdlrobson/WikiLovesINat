@@ -21,9 +21,13 @@ const mapObservation = (r) => {
     const observedDate = r.observed_on_string;
     const taxon = r.taxon || {};
     const taxonName = taxon.preferred_common_name || taxon.name;
+    const coords = r.location;
+    const place = r.place_guess;
     return r.photos.map((photo) => {
         return Object.assign( photo, {
             taxonName,
+            place,
+            coords,
             observedDate,
             commonsCompatLicense:
                 ['cc-by-sa', 'cc0', 'cc-by'].indexOf(photo.license_code) > -1
