@@ -47,7 +47,7 @@ const padDateComponent = (d) => {
     }
 };
 
-export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles, onClickMore ) => {
+export default ( photos, taxon, scientificName, qid, onClickUploadToCommons, uploadedFiles, onClickMore ) => {
     return node( 'div', { class: 'gallery' }, [
             node('h3', {}, 'Images on iNaturalist'),
             node('div', { class: 'gallery__thumbnails'},
@@ -59,7 +59,7 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
                     const photoId = photo.native_photo_id || photo.id;
                     const iNatUrl = `https://www.inaturalist.org/photos/${photoId}`;
                     const iNatHomeUrl = `https://inaturalist.org`;
-                    const taxonName = photo.taxonName || name;
+                    const taxonName = photo.taxonName || scientificName;
                     const dest = 'https://commons.wikimedia.org/wiki/Special:Upload';
                     const suggestedThumbUrl = photo.small_url || photo.url;
                     const ext = suggestedThumbUrl.split( '?' )[0].split('.').slice( -1 );
@@ -82,7 +82,7 @@ export default ( photos, taxon, name, qid, onClickUploadToCommons, uploadedFiles
                         `${taxonName}, ${photo.place} imported from iNaturalist photo ${photoId}.jpg`:
                         `${taxonName} imported from iNaturalist photo ${photoId} on ${prettyDate()}.jpg`;
                     const description = `{{Information
-  |description={{en|1=Photo of ${taxonName} uploaded from [${iNatHomeUrl} iNaturalist].}}
+  |description={{en|1=Photo of ${taxonName} (${scientificName}) uploaded from [${iNatHomeUrl} iNaturalist].}}
   |date=${timestamp}
   |source=${iNatUrl}
   |author=${photo.attribution}
