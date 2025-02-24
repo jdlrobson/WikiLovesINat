@@ -54,4 +54,4 @@ public/components/
 
   
 
-** It is currently in a prototype stage and can be explored at https://wikilovesinat.netlify.app/** .
+**It is currently in a prototype stage and can be explored at https://wikilovesinat.netlify.app/** .
